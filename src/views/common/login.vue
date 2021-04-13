@@ -1,13 +1,13 @@
 <template>
-  <div class="site-wrapper site-page--login">
+    <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">renren-fast-vue</h2>
-          <p class="brand-info__intro">renren-fast-vue基于vue、element-ui构建开发，实现renren-fast后台管理前端功能，提供一套更优的前端解决方案。</p>
+          <h2 class="brand-info__text">招聘系统</h2>
+          <p class="brand-info__intro">为学生和企业提供更多选择的机会</p>
         </div>
         <div class="login-main">
-          <h3 class="login-title">管理员登录</h3>
+          <h3 class="login-title">登录</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
             <el-form-item prop="userName">
               <el-input v-model="dataForm.userName" placeholder="帐号"></el-input>
@@ -27,9 +27,37 @@
               </el-row>
             </el-form-item>
             <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()" style="width: 100px">登录</el-button>
+              
+              <el-button class="login-btn-submit" type="primary" @click="registered()" style="width: 100px">注册</el-button>
             </el-form-item>
           </el-form>
+         <el-dialog
+            :title="!form.id ? '注册' : '注册'"
+            :close-on-click-modal="false"
+            :visible.sync="visible">
+            <el-form :model="form" :rules="dataRule" ref="form" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+              <el-form-item label="用户名">
+                <el-input v-model="form.userName" placeholder="登录帐号"></el-input>
+              </el-form-item>
+              <el-form-item label="密码" :class="{ 'is-required': !dataForm.id }">
+                <el-input v-model="form.password" type="password" placeholder="密码"></el-input>
+              </el-form-item>
+              <el-form-item label="确认密码" :class="{ 'is-required': !dataForm.id }">
+                <el-input v-model="form.comfirmPassword" type="password" placeholder="确认密码"></el-input>
+              </el-form-item>
+              <el-form-item label="您的职业" size="mini" prop="roleId">
+                <el-radio-group v-model="form.roleId">
+                  <el-radio :label="2">求职者</el-radio>
+                  <el-radio :label="1">招聘公司</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="visible = false">取消</el-button>
+              <el-button type="primary" @click="formSubmit()">确定</el-button>
+            </span>
+          </el-dialog>
         </div>
       </div>
     </div>
@@ -37,7 +65,7 @@
 </template>
 
 <script>
-  import { getUUID } from '@/utils'
+  import { getUUID } from '@/utils';
   export default {
     data () {
       return {
@@ -46,6 +74,19 @@
           password: '',
           uuid: '',
           captcha: ''
+        },
+        visible: false,
+        roleList: [],
+        form: {
+          id: 0,
+          userName: '',
+          password: '',
+          comfirmPassword: '',
+          salt: '',
+          email: '',
+          mobile: '',
+          roleId: '',
+          status: 1
         },
         dataRule: {
           userName: [
@@ -65,6 +106,35 @@
       this.getCaptcha()
     },
     methods: {
+      // 新增 / 修改
+      registered() {
+        this.visible = true;
+      },
+      // 注册
+      formSubmit () {
+        this.$refs['form'].$http({
+              url: this.$http.adornUrl(`/sys/user/${!this.form.id ? 'save' : 'save'}`),
+              method: 'post',
+              data: this.$http.adornData({
+                'username': this.form.userName,
+                'password': this.form.password,
+                'roleId': this.form.roleId
+              })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500,
+                  onClose: () => {
+                    this.visible = false
+                  }
+                })
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+      },
       // 提交表单
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
