@@ -49,13 +49,6 @@
       >
       </el-table-column>
       <el-table-column
-        prop="detail"
-        header-align="center"
-        align="center"
-        label="个人简介"
-      >
-      </el-table-column>
-      <el-table-column
         prop="idNumber"
         header-align="center"
         align="center"

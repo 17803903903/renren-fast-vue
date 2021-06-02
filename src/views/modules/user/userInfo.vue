@@ -26,13 +26,6 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="ruleForm.email" style="width: 200px"></el-input>
       </el-form-item>
-      <el-form-item label="个人简介" prop="detail">
-        <el-input
-          type="textarea"
-          v-model="ruleForm.detail"
-          style="width: 600px"
-        ></el-input>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="formSubmit()"
           >立即创建</el-button
@@ -91,8 +84,7 @@ export default {
                 'name': this.ruleForm.name,
                 'phone': this.ruleForm.phone,
                 'date': this.ruleForm.date,
-                'email': this.ruleForm.email,
-                'detail': this.ruleForm.detail 
+                'email': this.ruleForm.email
               }
             }).then(({data}) => {
               if (data && data.code === 0) {

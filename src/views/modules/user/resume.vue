@@ -13,6 +13,16 @@
       <el-form-item label="联系方式" prop="phone">
         <el-input v-model="ruleForm.phone" style="width: 200px"></el-input>
       </el-form-item>
+      <el-form-item label="出生日期" prop="date" required>
+        <el-date-picker
+          v-model="ruleForm.date"
+          type="date"
+          placeholder="选择日期"
+          format="yyyy 年 MM 月 dd 日"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="ruleForm.email" style="width: 200px"></el-input>
       </el-form-item>
@@ -69,6 +79,7 @@ export default {
       ruleForm: {
         name: '',
         phone: '',
+        date: '',
         email: '',
         address: '',
         family: '',
@@ -85,6 +96,14 @@ export default {
         address: [
           { required: true, message: '请输入地址', trigger: 'blur'}
         ],
+        date: [
+          {
+            type: 'date',
+            required: true,
+            message: '请选择出生日期',
+            trigger: 'blur'
+          }
+        ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           {validator: isEmail}
@@ -94,12 +113,33 @@ export default {
   },
   methods: {
     formSubmit () {
+      if (this.ruleForm.name == '') {
+            this.$message({type: 'warning', message: '请输入姓名', showClose: true});
+            return;
+      }
+      if (this.ruleForm.phone == '') {
+            this.$message({type: 'warning', message: '请输入手机号码', showClose: true});
+            return;
+      }
+      if (this.ruleForm.date == '') {
+            this.$message({type: 'warning', message: '请输入出生日期', showClose: true});
+            return;
+      }
+      if (this.ruleForm.email == '') {
+            this.$message({type: 'warning', message: '请输入邮箱', showClose: true});
+            return;
+      }
+      if (this.ruleForm.address == '') {
+            this.$message({type: 'warning', message: '请输入地址', showClose: true});
+            return;
+      }
         this.$refs['ruleForm'].$http({
               url: this.$http.adornUrl(`/user/updateUserInfo`),
               method: 'post',
               params: {
                 'name': this.ruleForm.name,
                 'phone': this.ruleForm.phone,
+                'date': this.ruleForm.date,
                 'email': this.ruleForm.email,
                 'address': this.ruleForm.address,
                 'family': this.ruleForm.family,

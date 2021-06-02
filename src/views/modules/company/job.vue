@@ -70,6 +70,30 @@ export default {
   },
   methods: {
     submitForm (formName) {
+      if (this.ruleForm.name == '') {
+            this.$message({type: 'warning', message: '请输入公司名称', showClose: true});
+            return;
+      }
+      if (this.ruleForm.jobName == '') {
+            this.$message({type: 'warning', message: '请输入岗位名称', showClose: true});
+            return;
+      }
+      if (this.ruleForm.jobDetail == '') {
+            this.$message({type: 'warning', message: '请输入岗位描述', showClose: true});
+            return;
+      }
+      if (this.ruleForm.jobDuty == '') {
+            this.$message({type: 'warning', message: '请输入岗位职责', showClose: true});
+            return;
+      }
+      if (this.ruleForm.money == '') {
+            this.$message({type: 'warning', message: '请输入福利待遇', showClose: true});
+            return;
+      }
+      if (this.ruleForm.required == '') {
+            this.$message({type: 'warning', message: '请输入应聘要求', showClose: true});
+            return;
+      }
       this.$refs['ruleForm'].$http({
               url: this.$http.adornUrl(`/company/saveCompanyJob`),
               method: 'post',
